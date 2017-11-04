@@ -6,6 +6,8 @@
 
 #include <functional>
 
+#include <util/common/plot/PlotStatic.h>
+
 // CEigensystemDlg dialog
 class CEigensystemDlg : public CDialogEx
 {
@@ -41,4 +43,13 @@ public:
     virtual BOOL DestroyWindow();
     afx_msg void OnBnClickedButton1();
     afx_msg void OnBnClickedButton2();
+    afx_msg void OnVisibilityCheckChanged(UINT nID);
+    double m_fpBarrierWidth;
+    double m_fpBarrierHeight;
+    int m_nOrbitalMomentum;
+    double m_fpStartEnergy;
+    double m_fpEndEnergy;
+    CButton m_cVisibilityChecks[7];
+    PlotStatic m_cEigenvaluePlot;
+    PlotStatic m_cEigenfunctionPlot;
 };

@@ -31,13 +31,32 @@ CEigensystemDlg::CEigensystemDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEigensystemDlg::IDD, pParent)
     , m_pWorkerThread(NULL)
     , m_bWorking(FALSE)
+    , m_fpBarrierWidth(1)
+    , m_fpBarrierHeight(1)
+    , m_nOrbitalMomentum(0)
+    , m_fpStartEnergy(-1)
+    , m_fpEndEnergy(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 void CEigensystemDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+    CDialogEx::DoDataExchange(pDX);
+    DDX_Text(pDX, IDC_EDIT1, m_fpBarrierWidth);
+    DDX_Text(pDX, IDC_EDIT2, m_fpBarrierHeight);
+    DDX_Text(pDX, IDC_EDIT3, m_nOrbitalMomentum);
+    DDX_Text(pDX, IDC_EDIT4, m_fpStartEnergy);
+    DDX_Text(pDX, IDC_EDIT5, m_fpEndEnergy);
+    DDX_Control(pDX, IDC_CHECK1, m_cVisibilityChecks[0]);
+    DDX_Control(pDX, IDC_CHECK2, m_cVisibilityChecks[1]);
+    DDX_Control(pDX, IDC_CHECK3, m_cVisibilityChecks[2]);
+    DDX_Control(pDX, IDC_CHECK4, m_cVisibilityChecks[3]);
+    DDX_Control(pDX, IDC_CHECK5, m_cVisibilityChecks[4]);
+    DDX_Control(pDX, IDC_CHECK6, m_cVisibilityChecks[5]);
+    DDX_Control(pDX, IDC_CHECK7, m_cVisibilityChecks[6]);
+    DDX_Control(pDX, IDC_EV_PLOT, m_cEigenvaluePlot);
+    DDX_Control(pDX, IDC_EF_PLOT, m_cEigenfunctionPlot);
 }
 
 BEGIN_MESSAGE_MAP(CEigensystemDlg, CDialogEx)
@@ -46,6 +65,7 @@ BEGIN_MESSAGE_MAP(CEigensystemDlg, CDialogEx)
     ON_MESSAGE(WM_INVOKE, &CEigensystemDlg::OnInvoke)
     ON_BN_CLICKED(IDC_BUTTON1, &CEigensystemDlg::OnBnClickedButton1)
     ON_BN_CLICKED(IDC_BUTTON2, &CEigensystemDlg::OnBnClickedButton2)
+    ON_COMMAND_RANGE(IDC_CHECK1, IDC_CHECK7, &CEigensystemDlg::OnVisibilityCheckChanged)
 END_MESSAGE_MAP()
 
 
@@ -61,6 +81,14 @@ BOOL CEigensystemDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
+    m_cVisibilityChecks[0].SetCheck(TRUE);
+    m_cVisibilityChecks[1].SetCheck(TRUE);
+    m_cVisibilityChecks[2].SetCheck(TRUE);
+    m_cVisibilityChecks[3].SetCheck(TRUE);
+    m_cVisibilityChecks[4].SetCheck(TRUE);
+    m_cVisibilityChecks[5].SetCheck(TRUE);
+    m_cVisibilityChecks[6].SetCheck(FALSE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -165,4 +193,9 @@ void CEigensystemDlg::OnBnClickedButton1()
 void CEigensystemDlg::OnBnClickedButton2()
 {
     StopSimulationThread();
+}
+
+
+afx_msg void CEigensystemDlg::OnVisibilityCheckChanged(UINT nID)
+{
 }
