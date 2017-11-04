@@ -1,0 +1,123 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{russ}
+\usepackage[english,russian]{babel}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{mathtext}
+\usepackage{newfloat}
+\usepackage{caption}
+\usepackage{indentfirst}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{mdframed}
+\usepackage[inline]{enumitem}
+\usepackage{graphicx}
+\usepackage{subfig}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.PNG}
+\graphicspath{{./img/}}
+\captionsetup[figure]{justification=centering}
+\renewcommand{\thesubfigure}{\asbuk{subfigure}}
+\DeclareCaptionLabelSeparator{dotseparator}{. }
+\captionsetup{
+   labelsep=dotseparator
+}
+
+\begin{document}
+
+\section{Постановка задачи}
+
+Найти спектр энергий и стационарные волновые функции для сферической потенциальной ямы конечной глубины:
+%%
+\begin{equation}\label{eq:barrier}
+U(r) = \begin{cases} 0,    & r \ge R_0 \\
+                     -V_0, & r  <  R_0 \end{cases} \textrm{,}
+\end{equation}
+%%
+Орбитальный момент не обязательно равен $0$.
+
+\section{Физическая модель}
+
+Будем рассматривать финитное движение нерелятивистской квантовой частицы известной массы и энергии в сферически симметричном стационарном потенциале, заданном в виде сферической потенциальной ямы конечной глубины.
+
+\section{Математическая модель}
+
+Стационарное уравнение Шредингера имеет вид:
+%%
+\begin{equation}\label{eq:schrodinger}
+\Delta\psi(\bm{r}) + \frac{2m}{\hbar^2} \left(E - U(\bm{r})\right) \psi(\bm{r}) = 0 \textrm{,}
+\end{equation}
+%%
+где $E$ -- энергия частицы, а $U(\bm{r})$ согласно задаче задается в виде \autoref{eq:barrier}.
+
+Целесообразно рассматривать решение задачи в сферической системе координат. Оператор Лапласа в ней:
+%%
+\begin{equation}\label{eq:laplacian}
+\Delta = \Delta_r + \frac{1}{r^2} \Delta_{\theta, \varphi} = \frac{1}{r} \frac{\partial^2}{\partial r^2} r + \frac{1}{r^2} \left( \frac{1}{\sin(\theta)} \frac{\partial}{\partial \theta} \sin(\theta) \frac{\partial}{\partial \theta} + \frac{1}{\sin^2(\theta)} \frac{\partial^2}{\partial \varphi^2} \right) \textrm{.}
+\end{equation}
+%%
+
+Угловая часть $\Delta_{\theta, \varphi}$ оператора Лапласа не зависит от $r$. Известно, что решением задачи Штурма-Лиувилля для $\Delta_{\theta, \varphi}$ являются шаровые функции $Y_{l,m}(\theta,\varphi)$, соответствующие собственным значениям $\lambda = l(l+1)$:
+%%
+\begin{equation}\label{eq:laplacian_anglepart_eigensystem}
+\Delta_{\theta, \varphi} Y_{l,m}(\theta,\varphi) = \lambda Y_{l,m}(\theta,\varphi) \textrm{.}
+\end{equation}
+%%
+В приложении к квантовой теории $l \ge 0$ называется орбитальным квантовым числом, $m \in \left[-l, l\right]$ -- магнитным квантовым числом.
+
+Подставим выражение для оператора Лапласа (\autoref{eq:laplacian}) в уравнение Шредингера (\autoref{eq:schrodinger}):
+%%
+\begin{equation}
+\frac{1}{r} \frac{\partial^2}{\partial r^2}\left(r\psi(\bm{r})\right) + \frac{1}{r^2} \Delta_{\theta,\varphi} \psi(\bm{r}) = - \frac{2m}{\hbar^2} (E - U(\bm{r})) \psi(\bm{r}) \textrm{.}
+\end{equation}
+%%
+
+Для упрощения последующих выкладок и исключения первой производной $\psi'$ целесообразно ввести новую функцию $\hat{\psi} = r \psi$. Тогда уравнение Шредингера примет окончательный вид:
+%%
+\begin{equation}\label{eq:schrodinger_expanded}
+\frac{\partial^2\hat{\psi}(\bm{r})}{\partial r^2} + \frac{1}{r^2} \Delta_{\theta, \varphi} \hat{\psi}(\bm{r}) = - \frac{2m}{\hbar^2} (E - U(\bm{r})) \hat{\psi}(\bm{r}) \textrm{.}
+\end{equation}
+%%
+
+Полученное уравнение будем решать методом разделения переменных. Положим
+%%
+\begin{equation}\label{eq:wavefunc}
+\hat{\psi} = u_n(r) Y_{l,m}(\theta,\varphi) \textrm{.}
+\end{equation}
+%%
+Подстановка этого выражения в \autoref{eq:schrodinger_expanded} дает
+%%
+\begin{equation}
+Y_{l,m} \frac{\partial^2 u_n}{\partial r^2} + \frac{1}{r^2} u_n \Delta_{\theta,\varphi} Y_{l,m} = - \frac{2m}{\hbar^2} (E_n - U(\bm{r})) u_n Y_{l,m} \textrm{.}
+\end{equation}
+%%
+Группируя в левой части равенства члены, зависящие от $r$, а в правой -- не зависящие от $r$, получаем, пользуясь \autoref{eq:laplacian_anglepart_eigensystem}, радиальное уравнение Шредингера для функции $u_n(r)$:
+%%
+\begin{equation}\label{eq:schrodinger_radial}
+\frac{d^2 u_n(r)}{d r^2} = - \left(\frac{l(l+1)}{r^2} + \frac{2m}{\hbar^2} (E_n - U(\bm{r}))\right) u_n(r) \textrm{.}
+\end{equation}
+%%
+
+Возвращаясь к введенной замене $\hat{\psi} = r \psi$, выпишем разложение $\psi$ на радиальную и угловую составляющие:
+%%
+\begin{equation}\label{eq:wavefunc_decomp}
+\psi(\bm{r}) = \frac{\hat{\psi}(\bm{r})}{r} = \frac{u_n(r)}{r} Y_{l,m}(\theta,\varphi) = w_{n}(r) Y_{l,m}(\theta,\varphi) \textrm{.}
+\end{equation}
+%%
+
+Нас будет интересовать только радиальная составляющая волновой функции $w_n(r)$, поскольку только она зависит от формы барьера $U(\bm{r})$. Сферические же функции известны, находятся аналитически и являются специальными функциями матфизики.
+
+Следует обратить внимание, что точка $r = 0$ для рассматриваемого уравнения (\autoref{eq:schrodinger_radial}) является особой. Из соотношения \autoref{eq:wavefunc_decomp} и требования непрерывности волновой функции всюду в пространстве следует, что $u_n(0) = 0$. Из симметрии задачи и требования непрерывности производной волновой функции следует, что $w_n'(0) = 0$, т.е. $w_n(r)$ при $r = 0$ имеет максимум или минимум. С учетом $u_n(0) = 0$ оно влечет $u_n'(0) = 0$.
+
+Таким образом, задача нахождения волновой функции сводится к решению задачи Коши с известными начальными условиями $u_n(0) = 0$ и $u_n'(0) = 0$.
+
+\section{Численная модель}
+
+\section{Результаты и их обсуждение}
+
+\section{Выводы}
+
+\end{document}
