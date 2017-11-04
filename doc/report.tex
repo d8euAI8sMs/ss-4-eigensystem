@@ -48,10 +48,10 @@ U(r) = \begin{cases} 0,    & r \ge R_0 \\
 Стационарное уравнение Шредингера имеет вид:
 %%
 \begin{equation}\label{eq:schrodinger}
-\Delta\psi(\bm{r}) + \frac{2m}{\hbar^2} \left(E - U(\bm{r})\right) \psi(\bm{r}) = 0 \textrm{,}
+\Delta\psi(\bm{r}) + \frac{2m}{\hbar^2} \left(E - U(r)\right) \psi(\bm{r}) = 0 \textrm{,}
 \end{equation}
 %%
-где $E$ -- энергия частицы, а $U(\bm{r})$ согласно задаче задается в виде \autoref{eq:barrier}.
+где $E$ -- энергия частицы, а $U(r)$ согласно задаче задается в виде \autoref{eq:barrier}.
 
 Целесообразно рассматривать решение задачи в сферической системе координат. Оператор Лапласа в ней:
 %%
@@ -71,14 +71,14 @@ U(r) = \begin{cases} 0,    & r \ge R_0 \\
 Подставим выражение для оператора Лапласа (\autoref{eq:laplacian}) в уравнение Шредингера (\autoref{eq:schrodinger}):
 %%
 \begin{equation}
-\frac{1}{r} \frac{\partial^2}{\partial r^2}\left(r\psi(\bm{r})\right) + \frac{1}{r^2} \Delta_{\theta,\varphi} \psi(\bm{r}) = - \frac{2m}{\hbar^2} (E - U(\bm{r})) \psi(\bm{r}) \textrm{.}
+\frac{1}{r} \frac{\partial^2}{\partial r^2}\left(r\psi(\bm{r})\right) + \frac{1}{r^2} \Delta_{\theta,\varphi} \psi(\bm{r}) = - \frac{2m}{\hbar^2} (E - U(r)) \psi(\bm{r}) \textrm{.}
 \end{equation}
 %%
 
 Для упрощения последующих выкладок и исключения первой производной $\psi'$ целесообразно ввести новую функцию $\hat{\psi} = r \psi$. Тогда уравнение Шредингера примет окончательный вид:
 %%
 \begin{equation}\label{eq:schrodinger_expanded}
-\frac{\partial^2\hat{\psi}(\bm{r})}{\partial r^2} + \frac{1}{r^2} \Delta_{\theta, \varphi} \hat{\psi}(\bm{r}) = - \frac{2m}{\hbar^2} (E - U(\bm{r})) \hat{\psi}(\bm{r}) \textrm{.}
+\frac{\partial^2\hat{\psi}(\bm{r})}{\partial r^2} + \frac{1}{r^2} \Delta_{\theta, \varphi} \hat{\psi}(\bm{r}) = - \frac{2m}{\hbar^2} (E - U(r)) \hat{\psi}(\bm{r}) \textrm{.}
 \end{equation}
 %%
 
@@ -91,13 +91,13 @@ U(r) = \begin{cases} 0,    & r \ge R_0 \\
 Подстановка этого выражения в \autoref{eq:schrodinger_expanded} дает
 %%
 \begin{equation}
-Y_{l,m} \frac{\partial^2 u_n}{\partial r^2} + \frac{1}{r^2} u_n \Delta_{\theta,\varphi} Y_{l,m} = - \frac{2m}{\hbar^2} (E_n - U(\bm{r})) u_n Y_{l,m} \textrm{.}
+Y_{l,m} \frac{\partial^2 u_n}{\partial r^2} + \frac{1}{r^2} u_n \Delta_{\theta,\varphi} Y_{l,m} = - \frac{2m}{\hbar^2} (E_n - U(r)) u_n Y_{l,m} \textrm{.}
 \end{equation}
 %%
 Группируя в левой части равенства члены, зависящие от $r$, а в правой -- не зависящие от $r$, получаем, пользуясь \autoref{eq:laplacian_anglepart_eigensystem}, радиальное уравнение Шредингера для функции $u_n(r)$:
 %%
 \begin{equation}\label{eq:schrodinger_radial}
-\frac{d^2 u_n(r)}{d r^2} = - \left(\frac{l(l+1)}{r^2} + \frac{2m}{\hbar^2} (E_n - U(\bm{r}))\right) u_n(r) \textrm{.}
+\frac{d^2 u_n(r)}{d r^2} = - \left(\frac{l(l+1)}{r^2} + \frac{2m}{\hbar^2} (E_n - U(r))\right) u_n(r) \textrm{.}
 \end{equation}
 %%
 
@@ -108,7 +108,7 @@ Y_{l,m} \frac{\partial^2 u_n}{\partial r^2} + \frac{1}{r^2} u_n \Delta_{\theta,\
 \end{equation}
 %%
 
-Нас будет интересовать только радиальная составляющая волновой функции $w_n(r)$, поскольку только она зависит от формы барьера $U(\bm{r})$. Сферические же функции известны, находятся аналитически и являются специальными функциями матфизики.
+Нас будет интересовать только радиальная составляющая волновой функции $w_n(r)$, поскольку только она зависит от формы барьера $U(r)$. Сферические же функции известны, находятся аналитически и являются специальными функциями матфизики.
 
 Следует обратить внимание, что точка $r = 0$ для рассматриваемого уравнения (\autoref{eq:schrodinger_radial}) является особой. Из соотношения \autoref{eq:wavefunc_decomp} и требования непрерывности волновой функции всюду в пространстве следует, что $u_n(0) = 0$. Из симметрии задачи и требования непрерывности производной волновой функции следует, что $w_n'(0) = 0$, т.е. $w_n(r)$ при $r = 0$ имеет максимум или минимум. С учетом $u_n(0) = 0$ оно влечет $u_n'(0) = 0$.
 
