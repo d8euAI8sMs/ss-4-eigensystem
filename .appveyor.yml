@@ -1,0 +1,16 @@
+version: '{build}'
+
+image:
+  - Visual Studio 2013
+
+configuration:
+  - Release
+
+install:
+  - git submodule update --init --recursive
+
+build:
+  project: src\eigensystem\eigensystem.sln
+
+artifacts:
+  - path: 'src\eigensystem\%CONFIGURATION%\eigensystem.exe'
