@@ -186,6 +186,8 @@ BOOL CEigensystemDlg::DestroyWindow()
 
 void CEigensystemDlg::OnBnClickedButton1()
 {
+    UpdateData(TRUE);
+
     StartSimulationThread();
 }
 
