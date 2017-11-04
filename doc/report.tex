@@ -169,6 +169,44 @@ u_n'' \cos \phi - u_n' \phi' \sin \phi - u_n' \sin \phi - u_n \phi' \cos \phi = 
 
 Для решения задачи Коши выберем явный метод Рунге-Кутты 4-го порядка.
 
+\subsection{Приведение к безразмерному виду}
+
+В целях борьбы с погрешностями, вносимыми спецификой компьютерных вычислений, проведем обезразмеривание параметров задачи.
+
+Введем новые относительные величины:
+%%
+\begin{equation}\begin{gathered}\label{eq:relative_vars}
+s = \frac{r}{L_0} \textrm{, }
+s_0 = \frac{R_0}{L_0} \textrm{, }
+e = \frac{2m}{\hbar^2} \frac{E}{E_0} \textrm{, }
+v_0 = \frac{2m}{\hbar^2} \frac{V_0}{E_0} \textrm{, } \\
+u_n(s) = u_n(r = s s_0) \textrm{,} \\
+v(s) = (v_0 / V_0) U(r = s s_0) \textrm{.}
+\end{gathered}\end{equation}
+%%
+
+В них уравнение Шредингера будет иметь вид:
+%%
+\begin{equation}
+\frac{d^2 u_n(s)}{ds^2} = - \left(\frac{l(l+1)}{s^2} + s_0^2 (e_n - v(s))\right) u_n(s) \textrm{.}
+\end{equation}
+%%
+
+Уравнение \autoref{eq:phase_dfunc} запишется в виде
+%%
+\begin{equation}
+\frac{d\phi(s)}{ds} = - s_0 \left(\frac{l(l+1)}{s^2 s^2_0} + (e_n - v(s))\right) \cos^2 \phi(s) - s_0 \sin^2 \phi(s) \textrm{,}
+\end{equation}
+%%
+а \autoref{eq:rho_dfunc} -- в виде
+%%
+\begin{equation}
+\frac{d\rho(s)}{ds} = \frac{s_0}{2} \rho \sin(2\phi(s)) \left(1 - \left(\frac{l(l+1)}{s^2 s^2_0} + (e_n - v(s))\right)\right) \textrm{.}
+\end{equation}
+%%
+
+При моделировании можно принять $E_0 = V_0 = 1$, $L_0 = R_0$.
+
 \section{Результаты и их обсуждение}
 
 \section{Выводы}
