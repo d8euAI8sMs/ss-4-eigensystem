@@ -116,6 +116,50 @@ Y_{l,m} \frac{\partial^2 u_n}{\partial r^2} + \frac{1}{r^2} u_n \Delta_{\theta,\
 
 \section{Численная модель}
 
+\subsection{Численный метод}
+
+Для решения задачи воспользуемся методом тригонометрической прогонки. Для чего запишем:
+%%
+\begin{equation}\label{eq:sweep_trig}\begin{aligned}
+u_n(r) &= \rho(r) \sin \phi(r) \\
+u_n'(r) &= \rho(r) \cos \phi(r) \textrm{,}
+\end{aligned}\end{equation}
+%%
+где $\rho(r)$ -- радиальная, $\phi(r)$ -- фазовая функция, откуда сразу получаем уравнение связи:
+%%
+\begin{equation}\label{eq:sweep_trig_rel}
+u_n' \cos \phi - u_n \sin \phi = 0 \textrm{.}
+\end{equation}
+%%
+Продифференцируем полученное соотношение по $r$:
+%%
+\begin{equation}
+u_n'' \cos \phi - u_n' \phi' \sin \phi - u_n' \sin \phi - u_n \phi' \cos \phi = 0 \textrm{,}
+\end{equation}
+%%
+подставим $u_n''(r)$ из уравнения Шредингера:
+%%
+\begin{equation}
+- \tilde{E}(r) u_n \cos \phi - u_n' \phi' \sin \phi - u_n' \sin \phi - u_n \phi' \cos \phi = 0 \textrm{,}
+\end{equation}
+%%
+где за $\tilde{E}(r)$ обозначен коэффициент перед $u_n(r)$ в уравнении Шредингера.
+
+Рассматривая полученное выражение совместно с \autoref{eq:sweep_trig_rel} как систему однородных линейных уравнений относительно $u_n(r)$ и $u_n'(r)$, запишем условие наличия у системы нетривиальных решений, т.е. потребуем равенства нулю определителя системы:
+%%
+\begin{equation}
+(\tilde{E}(r) + \phi') \cos^2 \phi + (\phi' + 1) \sin^2 \phi = 0 \textrm{,}
+\end{equation}
+%%
+откуда, окончательно,
+\begin{equation}\label{eq:phase_dfunc}
+\phi'(r) = - \tilde{E}(r) \cos^2 \phi - \sin^2 \phi \textrm{.}
+\end{equation}
+%%
+Данное уравнение будем решать при начальном условии $\psi(0) = \pi / 2$ (следует из \autoref{eq:sweep_trig}). Стационарные уровни энергии $E_n$ найдутся из условия $u_n(\infty) = 0 \approx u_n(L \gg L_0)$, $L_0$ -- характерный размер системы (ширина барьера), т.е. $\phi(L) = - (2 k + 1) \pi / 2$, $k = 0, 1, 2, \dots$
+
+Для решения задачи Коши выберем явный метод Рунге-Кутты 4-го порядка.
+
 \section{Результаты и их обсуждение}
 
 \section{Выводы}
