@@ -23,7 +23,7 @@ namespace model
 
     static inline math::dfunc3_t < rv3 > make_wavefunc_dfunc
     (
-        math::continuous_t && barrier_fn,
+        math::continuous_t barrier_fn,
         double s0,
         double e,
         int l
