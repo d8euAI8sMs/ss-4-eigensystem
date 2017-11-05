@@ -34,7 +34,7 @@ namespace model
             double E = ((l * (l + 1)) / s0 / s / s + s0 * (e - barrier_fn(s)));
             return
             {
-                (1 - E) * rho_phi.at<0>() * std::sin(2 * rho_phi.at<1>()) / 2,
+                (s0 - E) * rho_phi.at<0>() * std::sin(2 * rho_phi.at<1>()) / 2,
 
                 - E * std::cos(rho_phi.at<1>()) * std::cos(rho_phi.at<1>())
                 - s0 * std::sin(rho_phi.at<1>()) * std::sin(rho_phi.at<1>())
