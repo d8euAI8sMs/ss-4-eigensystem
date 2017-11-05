@@ -16,7 +16,17 @@
 
 // CEigensystemDlg dialog
 
+using namespace plot;
+using namespace util;
+using namespace math;
 
+using points_t = std::vector < point < double > > ;
+using plot_t   = simple_list_plot < points_t > ;
+
+const size_t n_points    = 1000;
+const size_t n_wavefuncs = 6;
+
+plot_t phase_plot, wavefunc_re_plots[n_wavefuncs], wavefunc_im_plots[n_wavefuncs];
 
 UINT SimulationThreadProc(LPVOID pParam)
 {
@@ -89,6 +99,86 @@ BOOL CEigensystemDlg::OnInitDialog()
     m_cVisibilityChecks[4].SetCheck(TRUE);
     m_cVisibilityChecks[5].SetCheck(TRUE);
     m_cVisibilityChecks[6].SetCheck(FALSE);
+
+    auto_viewport_params params;
+    params.factors = { 0, 0, 0.1, 0.1 };
+    params.fixed   = { true, true, false, false };
+    auto phase_avp    = min_max_auto_viewport < points_t > :: create();
+    auto wavefunc_avp = min_max_auto_viewport < points_t > :: create();
+    phase_avp->set_params(params);
+    wavefunc_avp->set_params(params);
+
+    phase_plot
+        .with_view()
+        .with_view_line_pen(plot::palette::pen(RGB(255, 255, 255), 2))
+        .with_data()
+        .with_auto_viewport(phase_avp);
+
+    std::vector < drawable::ptr_t > wavefunc_layers;
+
+    for (size_t i = 0; i < n_wavefuncs; ++i)
+    {
+        wavefunc_re_plots[i]
+            .with_view()
+            .with_view_line_pen(plot::palette::pen(RGB(255, 255, 255), 2))
+            .with_data()
+            .with_auto_viewport(wavefunc_avp);
+        wavefunc_im_plots[i]
+            .with_view()
+            .with_view_line_pen(plot::palette::pen(RGB(255, 255, 255), 2, PS_DASH))
+            .with_data()
+            .with_auto_viewport(wavefunc_avp);
+        wavefunc_layers.push_back(wavefunc_re_plots->view);
+        wavefunc_layers.push_back(wavefunc_im_plots->view);
+    }
+
+    m_cEigenvaluePlot.background = palette::brush();
+    m_cEigenfunctionPlot.background = palette::brush();
+
+    m_cEigenvaluePlot.triple_buffered = true;
+    m_cEigenfunctionPlot.triple_buffered = true;
+
+    m_cEigenvaluePlot.plot_layer.with(
+        viewporter::create(
+            tick_drawable::create(
+                phase_plot.view,
+                const_n_tick_factory<axe::x>::create(
+                    make_simple_tick_formatter(2, 5),
+                    0,
+                    5
+                ),
+                const_n_tick_factory<axe::y>::create(
+                    make_simple_tick_formatter(2, 5),
+                    0,
+                    5
+                ),
+                palette::pen(RGB(80, 80, 80)),
+                RGB(200, 200, 200)
+            ),
+            make_viewport_mapper(phase_plot.viewport_mapper)
+        )
+    );
+
+    m_cEigenfunctionPlot.plot_layer.with(
+        viewporter::create(
+            tick_drawable::create(
+                layer_drawable::create(wavefunc_layers),
+                const_n_tick_factory<axe::x>::create(
+                    make_simple_tick_formatter(2, 5),
+                    0,
+                    5
+                ),
+                const_n_tick_factory<axe::y>::create(
+                    make_simple_tick_formatter(2, 5),
+                    0,
+                    5
+                ),
+                palette::pen(RGB(80, 80, 80)),
+                RGB(200, 200, 200)
+            ),
+            make_viewport_mapper(wavefunc_re_plots[0].viewport_mapper)
+        )
+    );
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
