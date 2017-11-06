@@ -30,6 +30,7 @@ const size_t n_points    = 1000;
 const size_t n_wavefuncs = 6;
 
 plot_t phase_plot, wavefunc_re_plots[n_wavefuncs];
+world_t::ptr_t phase_fixed_bound = world_t::create(), wavefunc_fixed_bound = world_t::create();
 
 UINT SimulationThreadProc(LPVOID pParam)
 {
