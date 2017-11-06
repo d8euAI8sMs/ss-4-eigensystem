@@ -36,9 +36,9 @@ namespace model
             double sin2   = std::sin(2 * rho_phi.at<1>()) / 2;
             return
             {
-                rho_phi.at<0>() * (s0 * sin2 - ((l * (l + 1)) / s0 * sin2 / s / s + s0 * (e - barrier_fn(s)) * sin2)),
+                rho_phi.at<0>() * (s0 * sin2 - ((l * (l + 1)) / s0 * sin2 / max(1e-1, s) / max(1e-4, s) + s0 * (e - barrier_fn(s)) * sin2)),
 
-                - ((l * (l + 1)) / s0 * cos_sq / s / s + s0 * (e - barrier_fn(s)) * cos_sq)
+                - ((l * (l + 1)) / s0 * cos_sq / max(1e-1, s) / max(1e-4, s) + s0 * (e - barrier_fn(s)) * cos_sq)
                 - s0 * sin_sq
             };
         };
@@ -52,6 +52,6 @@ namespace model
         double phi
     )
     {
-        return rho * std::cos(phi) / s / s0;
+        return rho * std::cos(phi) / max(1e-8, s) / s0;
     }
 }
