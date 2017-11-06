@@ -26,7 +26,7 @@ using plot_t   = simple_list_plot < points_t > ;
 const size_t n_points    = 1000;
 const size_t n_wavefuncs = 6;
 
-plot_t phase_plot, wavefunc_re_plots[n_wavefuncs], wavefunc_im_plots[n_wavefuncs];
+plot_t phase_plot, wavefunc_re_plots[n_wavefuncs];
 
 UINT SimulationThreadProc(LPVOID pParam)
 {
@@ -124,16 +124,9 @@ BOOL CEigensystemDlg::OnInitDialog()
     {
         wavefunc_re_plots[i]
             .with_view()
-            .with_view_line_pen(plot::palette::pen(RGB(255, 255, 255), 2))
-            .with_data()
-            .with_auto_viewport(wavefunc_avp);
-        wavefunc_im_plots[i]
-            .with_view()
-            .with_view_line_pen(plot::palette::pen(RGB(255, 255, 255), 2, PS_DASH))
             .with_data()
             .with_auto_viewport(wavefunc_avp);
         wavefunc_layers.push_back(wavefunc_re_plots->view);
-        wavefunc_layers.push_back(wavefunc_im_plots->view);
     }
 
     m_cEigenvaluePlot.background = palette::brush();
