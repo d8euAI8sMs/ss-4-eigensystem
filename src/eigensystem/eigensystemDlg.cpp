@@ -136,10 +136,27 @@ BOOL CEigensystemDlg::OnInitDialog()
     m_cEigenvaluePlot.triple_buffered = true;
     m_cEigenfunctionPlot.triple_buffered = true;
 
+    custom_drawable::ptr_t phase_lines = custom_drawable::create
+    (
+        [] (CDC & dc, const viewport & vp)
+        {
+            auto pen = palette::pen(0xffff00, 2);
+            dc.SelectObject(pen.get());
+            size_t k_max = std::ceil(std::abs(vp.world.ymin / M_PI + 0.5));
+            for (size_t i = 0; i < k_max; ++i)
+            {
+                dc.MoveTo(vp.world_to_screen().xy({ vp.world.xmin, - (2 * (int) i + 1) * M_PI / 2 }));
+                dc.LineTo(vp.world_to_screen().xy({ vp.world.xmax, - (2 * (int) i + 1) * M_PI / 2 }));
+            }
+        }
+    );
+
     m_cEigenvaluePlot.plot_layer.with(
         viewporter::create(
             tick_drawable::create(
-                phase_plot.view,
+                layer_drawable::create(std::vector < drawable::ptr_t > ({
+                    phase_plot.view, phase_lines
+                })),
                 const_n_tick_factory<axe::x>::create(
                     make_simple_tick_formatter(2, 5),
                     0,
