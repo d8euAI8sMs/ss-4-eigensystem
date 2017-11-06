@@ -7,6 +7,8 @@
 #include "eigensystemDlg.h"
 #include "afxdialogex.h"
 
+#include "model.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -19,6 +21,7 @@
 using namespace plot;
 using namespace util;
 using namespace math;
+using namespace model;
 
 using points_t = std::vector < point < double > > ;
 using plot_t   = simple_list_plot < points_t > ;
@@ -31,6 +34,132 @@ plot_t phase_plot, wavefunc_re_plots[n_wavefuncs];
 UINT SimulationThreadProc(LPVOID pParam)
 {
     CEigensystemDlg & dlg = * (CEigensystemDlg *) pParam;
+
+    int l;
+    double e_start, e_end, b_w, b_h, w;
+
+    // get modeling properties
+
+    dlg.Invoke([&] () {
+        l = dlg.m_nOrbitalMomentum;
+        e_start = dlg.m_fpStartEnergy;
+        e_end = dlg.m_fpEndEnergy;
+        b_w = dlg.m_fpBarrierWidth;
+        b_h = dlg.m_fpBarrierHeight;
+    });
+
+    w = b_w * 1.5;
+
+    auto barrier_fn = make_barrier_fn(b_w, b_h);
+
+    // update fixed bounds
+
+    phase_fixed_bound->xmin = e_start;
+    phase_fixed_bound->xmax = e_end;
+
+    wavefunc_fixed_bound->xmin = -w;
+    wavefunc_fixed_bound->xmax = w;
+
+    // calculate phase plot
+
+    phase_plot.data->clear();
+    for (size_t i = 0; (i < n_points) && dlg.m_bWorking; ++i)
+    {
+        double e = e_start + (double) i / (n_points) * (e_end - e_start);
+        auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, e, l);
+        auto result = rk4_solve3ia < rv3 > (wavefunc_dfunc,
+                                            0,
+                                            b_w * 10,
+                                            b_w / n_points,
+                                            rv3 { 0, M_PI / 2 },
+                                            1e-8,
+                                            0.01);
+        phase_plot.data->emplace_back(e, result.x.at<1>());
+        if ((i % (n_points / 100)) == 0)
+        {
+            phase_plot.refresh();
+            dlg.m_cEigenvaluePlot.RedrawBuffer();
+            dlg.m_cEigenvaluePlot.SwapBuffers();
+            dlg.Invoke([&] () {
+                dlg.m_cEigenvaluePlot.RedrawWindow();
+            });
+        }
+    }
+
+    phase_plot.refresh();
+    dlg.m_cEigenvaluePlot.RedrawBuffer();
+    dlg.m_cEigenvaluePlot.SwapBuffers();
+    dlg.Invoke([&] () {
+        dlg.m_cEigenvaluePlot.RedrawWindow();
+    });
+
+    if (!dlg.m_bWorking)
+    {
+        return 0;
+    }
+
+    wavefunc_re_plots[0].refresh();
+
+    // find up to `n_wavefunc` eigenvalues
+
+    double energy_levels[n_wavefuncs] = {};
+    size_t level_count = min(n_wavefuncs, max(abs(phase_plot.data->back().y - phase_plot.data->front().y) / M_PI + 0.5, 0));
+    size_t min_level = (size_t) std::ceil(std::abs(phase_plot.data->front().y / M_PI - 0.5));
+
+    size_t left = 0;
+    for (size_t i = 0; i < level_count; ++i)
+    {
+        double thr = - (2 * ((int) i + (int) min_level) + 1) * M_PI / 2;
+        for (size_t j = left; j < n_points - 1; ++j)
+        {
+            if ((phase_plot.data->at(j).y >= thr) && (phase_plot.data->at(j + 1).y <= thr))
+            {
+                energy_levels[i] = phase_plot.data->at(j).x;
+                left = j;
+                break;
+            }
+        }
+    }
+
+    // draw `level_count` wave functions
+
+    for (size_t i = 0; i < n_wavefuncs; ++i)
+    {
+        wavefunc_re_plots[i].data->clear();
+    }
+
+    wavefunc_re_plots[0].auto_world->clear();
+
+    for (size_t i = 0; (i < level_count) && dlg.m_bWorking; ++i)
+    {
+        auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, energy_levels[i], l);
+        double s_step = w / (n_points / 10);
+        dresult3 < rv3 > result = { 0, { 0, M_PI / 2 } };
+        for (size_t j = 0; (result.t < w) && dlg.m_bWorking; ++j)
+        {
+            result = rk4_solve3a < rv3 > (wavefunc_dfunc, result.t, s_step, result.x, 1e-8, 0.01);
+            if (!wavefunc_re_plots[i].data->empty() &&
+                (result.t - wavefunc_re_plots[i].data->back().x < s_step / 10))
+            {
+                continue;
+            }
+            auto wavefunc_value = make_wavefunc_value(b_w, result.t, result.x.at<0>(), result.x.at<1>());
+            wavefunc_re_plots[i].data->emplace_back(result.t, wavefunc_value);
+            wavefunc_re_plots[i].data->insert(wavefunc_re_plots[i].data->begin(), point<double>(-result.t, wavefunc_value));
+            if (((wavefunc_re_plots[i].data->size() / 2) % (n_points / 100)) == 0)
+            {
+                wavefunc_re_plots[0].auto_world->adjust(*wavefunc_re_plots[i].data);
+                wavefunc_re_plots[0].auto_world->flush();
+                dlg.m_cEigenfunctionPlot.RedrawBuffer();
+                dlg.m_cEigenfunctionPlot.SwapBuffers();
+                dlg.Invoke([&] () {
+                    dlg.m_cEigenfunctionPlot.RedrawWindow();
+                });
+            }
+        }
+    }
+
+    // exit
 
     dlg.m_bWorking = FALSE;
 
