@@ -105,7 +105,11 @@ BOOL CEigensystemDlg::OnInitDialog()
     params.fixed   = { true, true, false, false };
     auto phase_avp    = min_max_auto_viewport < points_t > :: create();
     auto wavefunc_avp = min_max_auto_viewport < points_t > :: create();
+    params.fixed_bound = phase_fixed_bound;
     phase_avp->set_params(params);
+    params.upper = { false, false, true, true };
+    params.upper_bound = world_t::create(0, 0, -1.1, 1.1);
+    params.fixed_bound = wavefunc_fixed_bound;
     wavefunc_avp->set_params(params);
 
     phase_plot
