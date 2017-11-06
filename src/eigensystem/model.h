@@ -31,13 +31,15 @@ namespace model
     {
         return [=] (double s, const rv3 & rho_phi) -> rv3
         {
-            double E = ((l * (l + 1)) / s0 / s / s + s0 * (e - barrier_fn(s)));
+            double cos_sq = std::cos(rho_phi.at<1>()) * std::cos(rho_phi.at<1>());
+            double sin_sq = std::sin(rho_phi.at<1>()) * std::sin(rho_phi.at<1>());
+            double sin2   = std::sin(2 * rho_phi.at<1>()) / 2;
             return
             {
-                (s0 - E) * rho_phi.at<0>() * std::sin(2 * rho_phi.at<1>()) / 2,
+                rho_phi.at<0>() * (s0 * sin2 - ((l * (l + 1)) / s0 * sin2 / s / s + s0 * (e - barrier_fn(s)) * sin2)),
 
-                - E * std::cos(rho_phi.at<1>()) * std::cos(rho_phi.at<1>())
-                - s0 * std::sin(rho_phi.at<1>()) * std::sin(rho_phi.at<1>())
+                - ((l * (l + 1)) / s0 * cos_sq / s / s + s0 * (e - barrier_fn(s)) * cos_sq)
+                - s0 * sin_sq
             };
         };
     }
