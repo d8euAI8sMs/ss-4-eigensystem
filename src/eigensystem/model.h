@@ -42,7 +42,7 @@ namespace model
         };
     }
 
-    static inline math::complex < > make_wavefunc_value
+    static inline double make_wavefunc_value
     (
         double s0,
         double s,
@@ -50,6 +50,6 @@ namespace model
         double phi
     )
     {
-        return rho * math::exp(math::_i * phi) / s / s0;
+        return rho * std::cos(phi) / s / s0;
     }
 }
