@@ -127,7 +127,7 @@ BOOL CEigensystemDlg::OnInitDialog()
             .with_view_line_pen(plot::palette::pen(RGB(127 + rand() % 128, 127 + rand() % 128, 255), 2))
             .with_data()
             .with_auto_viewport(wavefunc_avp);
-        wavefunc_layers.push_back(wavefunc_re_plots->view);
+        wavefunc_layers.push_back(wavefunc_re_plots[i].view);
     }
 
     m_cEigenvaluePlot.background = palette::brush();
