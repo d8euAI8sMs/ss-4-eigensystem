@@ -170,10 +170,10 @@ CEigensystemDlg::CEigensystemDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEigensystemDlg::IDD, pParent)
     , m_pWorkerThread(NULL)
     , m_bWorking(FALSE)
-    , m_fpBarrierWidth(1)
-    , m_fpBarrierHeight(1)
+    , m_fpBarrierWidth(3)
+    , m_fpBarrierHeight(2)
     , m_nOrbitalMomentum(0)
-    , m_fpStartEnergy(-1)
+    , m_fpStartEnergy(-2)
     , m_fpEndEnergy(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
