@@ -270,7 +270,7 @@ BOOL CEigensystemDlg::OnInitDialog()
     (
         [] (CDC & dc, const viewport & vp)
         {
-            auto pen = palette::pen(0xffff00, 2);
+            auto pen = palette::pen(0xffffff, 2);
             dc.SelectObject(pen.get());
             size_t k_max = std::ceil(std::abs(vp.world.ymin / M_PI + 0.5));
             for (size_t i = 0; i < k_max; ++i)
@@ -280,6 +280,25 @@ BOOL CEigensystemDlg::OnInitDialog()
             }
         }
     );
+
+    custom_drawable::ptr_t barrier_lines = custom_drawable::create
+    (
+        [&] (CDC & dc, const viewport & vp)
+        {
+            auto pen = palette::pen(0xffffff, 3);
+            dc.SelectObject(pen.get());
+            double r;
+            this->Invoke([&] () {
+                r = this->m_fpBarrierWidth;
+            });
+            dc.MoveTo(vp.world_to_screen().xy({ -r, vp.world.ymin }));
+            dc.LineTo(vp.world_to_screen().xy({ -r, vp.world.ymax }));
+            dc.MoveTo(vp.world_to_screen().xy({ +r, vp.world.ymin }));
+            dc.LineTo(vp.world_to_screen().xy({ +r, vp.world.ymax }));
+        }
+    );
+
+    wavefunc_layers.push_back(barrier_lines);
 
     m_cEigenvaluePlot.plot_layer.with(
         viewporter::create(
