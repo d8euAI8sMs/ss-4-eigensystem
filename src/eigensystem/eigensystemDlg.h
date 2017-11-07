@@ -52,4 +52,5 @@ public:
     CButton m_cVisibilityChecks[7];
     PlotStatic m_cEigenvaluePlot;
     PlotStatic m_cEigenfunctionPlot;
+    double m_lfModelingInterval;
 };

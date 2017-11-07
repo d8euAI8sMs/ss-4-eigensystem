@@ -37,7 +37,7 @@ UINT SimulationThreadProc(LPVOID pParam)
     CEigensystemDlg & dlg = * (CEigensystemDlg *) pParam;
 
     int l;
-    double e_start, e_end, b_w, b_h, w;
+    double e_start, e_end, b_w, b_h, w, m_i;
 
     // get modeling properties
 
@@ -47,6 +47,7 @@ UINT SimulationThreadProc(LPVOID pParam)
         e_end = dlg.m_fpEndEnergy;
         b_w = dlg.m_fpBarrierWidth;
         b_h = dlg.m_fpBarrierHeight;
+        m_i = dlg.m_lfModelingInterval;
     });
 
     w = b_w * 1.5;
@@ -70,7 +71,7 @@ UINT SimulationThreadProc(LPVOID pParam)
         auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, e, l);
         auto result = rk4_solve3ia < rv3 > (wavefunc_dfunc,
                                             0,
-                                            b_w * 10,
+                                            b_w * m_i,
                                             b_w / n_points,
                                             rv3 { 0, M_PI / 2 },
                                             1e-8,
@@ -176,6 +177,7 @@ CEigensystemDlg::CEigensystemDlg(CWnd* pParent /*=NULL*/)
     , m_nOrbitalMomentum(0)
     , m_fpStartEnergy(-2)
     , m_fpEndEnergy(0)
+    , m_lfModelingInterval(10)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -197,6 +199,7 @@ void CEigensystemDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CHECK7, m_cVisibilityChecks[6]);
     DDX_Control(pDX, IDC_EV_PLOT, m_cEigenvaluePlot);
     DDX_Control(pDX, IDC_EF_PLOT, m_cEigenfunctionPlot);
+    DDX_Text(pDX, IDC_EDIT6, m_lfModelingInterval);
 }
 
 BEGIN_MESSAGE_MAP(CEigensystemDlg, CDialogEx)
