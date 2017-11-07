@@ -105,7 +105,7 @@ UINT SimulationThreadProc(LPVOID pParam)
 
     double energy_levels[n_wavefuncs] = {};
     size_t level_count = min(n_wavefuncs, max(abs(phase_plot.data->back().y - phase_plot.data->front().y) / M_PI + 0.5, 0));
-    size_t min_level = (size_t) std::ceil(std::abs(phase_plot.data->front().y / M_PI - 0.5));
+    size_t min_level = (size_t) std::floor(std::abs(phase_plot.data->front().y / M_PI - 0.5));
 
     size_t left = 0;
     for (size_t i = 0; i < level_count; ++i)
