@@ -232,7 +232,7 @@ CEigensystemDlg::CEigensystemDlg(CWnd* pParent /*=NULL*/)
     , m_nOrbitalMomentum(0)
     , m_fpStartEnergy(-2)
     , m_fpEndEnergy(0)
-    , m_lfModelingInterval(10)
+    , m_lfModelingInterval(2)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
