@@ -37,7 +37,7 @@ UINT SimulationThreadProc(LPVOID pParam)
     CEigensystemDlg & dlg = * (CEigensystemDlg *) pParam;
 
     int l;
-    double e_start, e_end, b_w, b_h, w, m_i;
+    double e_start, e_end, b_w, b_h, m_i;
 
     // get modeling properties
 
@@ -50,17 +50,12 @@ UINT SimulationThreadProc(LPVOID pParam)
         m_i = dlg.m_lfModelingInterval;
     });
 
-    w = b_w * 1.5;
-
     auto barrier_fn = make_barrier_fn(b_w, b_h);
 
     // update fixed bounds
 
     phase_fixed_bound->xmin = e_start;
     phase_fixed_bound->xmax = e_end;
-
-    wavefunc_fixed_bound->xmin = -w;
-    wavefunc_fixed_bound->xmax = w;
 
     // calculate phase plot
 
@@ -135,9 +130,9 @@ UINT SimulationThreadProc(LPVOID pParam)
     for (size_t i = 0; (i < level_count) && dlg.m_bWorking; ++i)
     {
         auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, energy_levels[i], l);
-        double s_step = w / (n_points / 10);
+        double s_step = b_w / (n_points / 10);
         dresult3 < rv3 > result = { 0, { 0, M_PI / 2 } };
-        for (size_t j = 0; (result.t < w) && dlg.m_bWorking; ++j)
+        for (size_t j = 0; (result.t < b_w * m_i) && dlg.m_bWorking; ++j)
         {
             result = rk4_solve3a < rv3 > (wavefunc_dfunc, result.t, s_step, result.x, 1e-8, 0.01);
             if (!wavefunc_re_plots[i].data->empty() &&
@@ -160,6 +155,13 @@ UINT SimulationThreadProc(LPVOID pParam)
                     {
                         wavefunc_re_plots[k].view->visible = dlg.m_cVisibilityChecks[k].GetCheck();
                     }
+                    double w = b_w * min(1.5, m_i);
+                    if (dlg.m_cDrawAtFullInterval.GetCheck())
+                    {
+                        w = b_w * m_i;
+                    }
+                    wavefunc_fixed_bound->xmin = -w;
+                    wavefunc_fixed_bound->xmax = w;
                 });
             }
         }
@@ -470,6 +472,17 @@ afx_msg void CEigensystemDlg::OnVisibilityCheckChanged(UINT nID)
     {
         wavefunc_re_plots[k].view->visible = this->m_cVisibilityChecks[k].GetCheck();
     }
+
+    double w = this->m_fpBarrierWidth * min(1.5, this->m_lfModelingInterval);
+    if (this->m_cDrawAtFullInterval.GetCheck())
+    {
+        w = this->m_fpBarrierWidth * this->m_lfModelingInterval;
+    }
+    wavefunc_fixed_bound->xmin = -w;
+    wavefunc_fixed_bound->xmax = w;
+
+    wavefunc_re_plots[0].auto_world->flush();
+
     this->m_cEigenfunctionPlot.RedrawBuffer();
     this->m_cEigenfunctionPlot.SwapBuffers();
     this->m_cEigenfunctionPlot.RedrawWindow();
