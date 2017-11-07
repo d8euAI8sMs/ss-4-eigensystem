@@ -197,6 +197,7 @@ void CEigensystemDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CHECK5, m_cVisibilityChecks[4]);
     DDX_Control(pDX, IDC_CHECK6, m_cVisibilityChecks[5]);
     DDX_Control(pDX, IDC_CHECK7, m_cVisibilityChecks[6]);
+    DDX_Control(pDX, IDC_CHECK8, m_cDrawAtFullInterval);
     DDX_Control(pDX, IDC_EV_PLOT, m_cEigenvaluePlot);
     DDX_Control(pDX, IDC_EF_PLOT, m_cEigenfunctionPlot);
     DDX_Text(pDX, IDC_EDIT6, m_lfModelingInterval);
@@ -208,7 +209,7 @@ BEGIN_MESSAGE_MAP(CEigensystemDlg, CDialogEx)
     ON_MESSAGE(WM_INVOKE, &CEigensystemDlg::OnInvoke)
     ON_BN_CLICKED(IDC_BUTTON1, &CEigensystemDlg::OnBnClickedButton1)
     ON_BN_CLICKED(IDC_BUTTON2, &CEigensystemDlg::OnBnClickedButton2)
-    ON_COMMAND_RANGE(IDC_CHECK1, IDC_CHECK7, &CEigensystemDlg::OnVisibilityCheckChanged)
+    ON_COMMAND_RANGE(IDC_CHECK1, IDC_CHECK8, &CEigensystemDlg::OnVisibilityCheckChanged)
 END_MESSAGE_MAP()
 
 
