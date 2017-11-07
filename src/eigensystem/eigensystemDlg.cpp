@@ -48,6 +48,10 @@ UINT SimulationThreadProc(LPVOID pParam)
         b_w = dlg.m_fpBarrierWidth;
         b_h = dlg.m_fpBarrierHeight;
         m_i = dlg.m_lfModelingInterval;
+        for (size_t k = 0; k < n_wavefuncs; ++k)
+        {
+            dlg.m_cVisibilityChecks[k].ShowWindow(SW_HIDE);
+        }
     });
 
     auto barrier_fn = make_barrier_fn(b_w, b_h);
@@ -117,6 +121,16 @@ UINT SimulationThreadProc(LPVOID pParam)
             }
         }
     }
+
+    dlg.Invoke([&] () {
+        CString str;
+        for (size_t k = 0; k < level_count; ++k)
+        {
+            str.Format(_T("E%u"), k + min_level);
+            dlg.m_cVisibilityChecks[k].SetWindowText(str);
+            dlg.m_cVisibilityChecks[k].ShowWindow(SW_SHOW);
+        }
+    });
 
     // draw `level_count` wave functions
 
@@ -239,6 +253,11 @@ BOOL CEigensystemDlg::OnInitDialog()
     m_cVisibilityChecks[4].SetCheck(TRUE);
     m_cVisibilityChecks[5].SetCheck(TRUE);
     m_cVisibilityChecks[6].SetCheck(FALSE);
+
+    for (size_t k = 0; k < n_wavefuncs; ++k)
+    {
+        m_cVisibilityChecks[k].ShowWindow(SW_HIDE);
+    }
 
     auto_viewport_params params;
     params.factors = { 0, 0, 0.1, 0.1 };
