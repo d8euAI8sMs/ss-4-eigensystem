@@ -116,7 +116,38 @@ UINT SimulationThreadProc(LPVOID pParam)
         {
             if ((phase_plot.data->at(j).y >= thr) && (phase_plot.data->at(j + 1).y <= thr))
             {
-                energy_levels[i] = phase_plot.data->at(j).x;
+                size_t iters = 0;
+                double left_e = phase_plot.data->at(j).x;
+                double right_e = phase_plot.data->at(j + 1).x;
+                double left_phi = phase_plot.data->at(j).y;
+                double right_phi = phase_plot.data->at(j + 1).y;
+                double cur_e;
+                double phi;
+                do
+                {
+                    cur_e = (left_e + right_e) / 2;
+                    auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, cur_e, l);
+                    auto result = rk4_solve3ia < rv3 > (wavefunc_dfunc,
+                                                        0,
+                                                        b_w * m_i,
+                                                        b_w / n_points,
+                                                        rv3 { 0, M_PI / 2 },
+                                                        1e-8,
+                                                        0.01);
+                    phi = result.x.at<1>();
+                    if ((left_phi >= thr) && (phi <= thr))
+                    {
+                        right_phi = thr;
+                        right_e   = cur_e;
+                    }
+                    else
+                    {
+                        left_phi = thr;
+                        left_e   = cur_e;
+                    }
+                    ++iters;
+                } while ((iters < 1000) && ((right_e - left_e) > 1e-8));
+                energy_levels[i] = (left_e + right_e) / 2;
                 left = j;
                 break;
             }
