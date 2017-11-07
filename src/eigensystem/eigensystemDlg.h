@@ -50,6 +50,7 @@ public:
     double m_fpStartEnergy;
     double m_fpEndEnergy;
     CButton m_cVisibilityChecks[7];
+    CStatic m_cEnergyLevels[6];
     PlotStatic m_cEigenvaluePlot;
     PlotStatic m_cEigenfunctionPlot;
     double m_lfModelingInterval;

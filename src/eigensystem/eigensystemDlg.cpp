@@ -51,6 +51,7 @@ UINT SimulationThreadProc(LPVOID pParam)
         for (size_t k = 0; k < n_wavefuncs; ++k)
         {
             dlg.m_cVisibilityChecks[k].ShowWindow(SW_HIDE);
+            dlg.m_cEnergyLevels[k].ShowWindow(SW_HIDE);
         }
     });
 
@@ -129,6 +130,9 @@ UINT SimulationThreadProc(LPVOID pParam)
             str.Format(_T("E%u"), k + min_level);
             dlg.m_cVisibilityChecks[k].SetWindowText(str);
             dlg.m_cVisibilityChecks[k].ShowWindow(SW_SHOW);
+            str.Format(_T("E%u=%.5lf"), k + min_level, energy_levels[k]);
+            dlg.m_cEnergyLevels[k].SetWindowText(str);
+            dlg.m_cEnergyLevels[k].ShowWindow(SW_SHOW);
         }
     });
 
@@ -217,6 +221,12 @@ void CEigensystemDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CHECK5, m_cVisibilityChecks[4]);
     DDX_Control(pDX, IDC_CHECK6, m_cVisibilityChecks[5]);
     DDX_Control(pDX, IDC_CHECK7, m_cVisibilityChecks[6]);
+    DDX_Control(pDX, IDC_EL0, m_cEnergyLevels[0]);
+    DDX_Control(pDX, IDC_EL1, m_cEnergyLevels[1]);
+    DDX_Control(pDX, IDC_EL2, m_cEnergyLevels[2]);
+    DDX_Control(pDX, IDC_EL3, m_cEnergyLevels[3]);
+    DDX_Control(pDX, IDC_EL4, m_cEnergyLevels[4]);
+    DDX_Control(pDX, IDC_EL5, m_cEnergyLevels[5]);
     DDX_Control(pDX, IDC_CHECK8, m_cDrawAtFullInterval);
     DDX_Control(pDX, IDC_EV_PLOT, m_cEigenvaluePlot);
     DDX_Control(pDX, IDC_EF_PLOT, m_cEigenfunctionPlot);
@@ -252,6 +262,7 @@ BOOL CEigensystemDlg::OnInitDialog()
     {
         m_cVisibilityChecks[k].SetCheck(TRUE);
         m_cVisibilityChecks[k].ShowWindow(SW_HIDE);
+        m_cEnergyLevels[k].ShowWindow(SW_HIDE);
     }
 
     auto_viewport_params params;
