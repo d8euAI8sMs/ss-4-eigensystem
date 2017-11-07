@@ -246,16 +246,11 @@ BOOL CEigensystemDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
-    m_cVisibilityChecks[0].SetCheck(TRUE);
-    m_cVisibilityChecks[1].SetCheck(TRUE);
-    m_cVisibilityChecks[2].SetCheck(TRUE);
-    m_cVisibilityChecks[3].SetCheck(TRUE);
-    m_cVisibilityChecks[4].SetCheck(TRUE);
-    m_cVisibilityChecks[5].SetCheck(TRUE);
     m_cVisibilityChecks[6].SetCheck(FALSE);
 
     for (size_t k = 0; k < n_wavefuncs; ++k)
     {
+        m_cVisibilityChecks[k].SetCheck(TRUE);
         m_cVisibilityChecks[k].ShowWindow(SW_HIDE);
     }
 
