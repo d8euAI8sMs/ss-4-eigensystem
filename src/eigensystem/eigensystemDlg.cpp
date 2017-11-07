@@ -156,6 +156,10 @@ UINT SimulationThreadProc(LPVOID pParam)
                 dlg.m_cEigenfunctionPlot.SwapBuffers();
                 dlg.Invoke([&] () {
                     dlg.m_cEigenfunctionPlot.RedrawWindow();
+                    for (size_t k = 0; k < n_wavefuncs; ++k)
+                    {
+                        wavefunc_re_plots[k].view->visible = dlg.m_cVisibilityChecks[k].GetCheck();
+                    }
                 });
             }
         }
@@ -458,4 +462,15 @@ void CEigensystemDlg::OnBnClickedButton2()
 
 afx_msg void CEigensystemDlg::OnVisibilityCheckChanged(UINT nID)
 {
+    if (this->m_bWorking)
+    {
+        return;
+    }
+    for (size_t k = 0; k < n_wavefuncs; ++k)
+    {
+        wavefunc_re_plots[k].view->visible = this->m_cVisibilityChecks[k].GetCheck();
+    }
+    this->m_cEigenfunctionPlot.RedrawBuffer();
+    this->m_cEigenfunctionPlot.SwapBuffers();
+    this->m_cEigenfunctionPlot.RedrawWindow();
 }
