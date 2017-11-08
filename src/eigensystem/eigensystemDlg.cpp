@@ -524,9 +524,16 @@ afx_msg void CEigensystemDlg::OnVisibilityCheckChanged(UINT nID)
     {
         return;
     }
+
+    wavefunc_re_plots[0].auto_world->clear();
+
     for (size_t k = 0; k < n_wavefuncs; ++k)
     {
         wavefunc_re_plots[k].view->visible = this->m_cVisibilityChecks[k].GetCheck();
+        if (wavefunc_re_plots[k].view->visible)
+        {
+            wavefunc_re_plots[0].auto_world->adjust(*wavefunc_re_plots[k].data);
+        }
     }
 
     double w = this->m_fpBarrierWidth * min(1.5, this->m_lfModelingInterval);
