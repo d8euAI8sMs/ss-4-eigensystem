@@ -26,7 +26,8 @@ namespace model
         math::continuous_t barrier_fn,
         double s0,
         double e,
-        int l
+        int l,
+        size_t empiric_tweak_flags
     )
     {
         return [=] (double s, const rv3 & rho_phi) -> rv3
@@ -34,11 +35,13 @@ namespace model
             double cos_sq = std::cos(rho_phi.at<1>()) * std::cos(rho_phi.at<1>());
             double sin_sq = std::sin(rho_phi.at<1>()) * std::sin(rho_phi.at<1>());
             double sin2   = std::sin(2 * rho_phi.at<1>()) / 2;
+            double c1 = (empiric_tweak_flags & 1) ? 1e-3 : 1e-1;
+            double c2 = (empiric_tweak_flags & 1) ? 1e-3 : 1e-4;
             return
             {
-                (s0 * sin2 - ((l * (l + 1)) / s0 * sin2 / max(1e-1, s) / max(1e-4, s) + s0 * (e - barrier_fn(s)) * sin2)),
+                (s0 * sin2 - ((l * (l + 1)) / s0 * sin2 / max(c1, s) / max(c2, s) + s0 * (e - barrier_fn(s)) * sin2)),
 
-                - ((l * (l + 1)) / s0 * cos_sq / max(1e-1, s) / max(1e-4, s) + s0 * (e - barrier_fn(s)) * cos_sq)
+                - ((l * (l + 1)) / s0 * cos_sq / max(c1, s) / max(c2, s) + s0 * (e - barrier_fn(s)) * cos_sq)
                 - s0 * sin_sq
             };
         };

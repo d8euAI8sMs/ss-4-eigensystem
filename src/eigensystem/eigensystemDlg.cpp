@@ -38,6 +38,7 @@ UINT SimulationThreadProc(LPVOID pParam)
 
     int l;
     double e_start, e_end, b_w, b_h, m_i;
+    bool z_a;
 
     // get modeling properties
 
@@ -48,6 +49,7 @@ UINT SimulationThreadProc(LPVOID pParam)
         b_w = dlg.m_fpBarrierWidth;
         b_h = dlg.m_fpBarrierHeight;
         m_i = dlg.m_lfModelingInterval;
+        z_a = dlg.m_bAccurateNearZero;
         for (size_t k = 0; k < n_wavefuncs; ++k)
         {
             dlg.m_cVisibilityChecks[k].ShowWindow(SW_HIDE);
@@ -68,10 +70,10 @@ UINT SimulationThreadProc(LPVOID pParam)
     for (size_t i = 0; (i < n_points) && dlg.m_bWorking; ++i)
     {
         double e = e_start + (double) i / (n_points) * (e_end - e_start);
-        auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, e, l);
+        auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, e, l, z_a ? 1 : 0);
         auto result = rk4_solve3ia < rv3 > (wavefunc_dfunc,
                                             0,
-                                            b_w * m_i,
+                                            b_w * (z_a ? 1 : m_i),
                                             b_w / n_points,
                                             rv3 { 0, M_PI / 2 },
                                             1e-8,
@@ -126,10 +128,10 @@ UINT SimulationThreadProc(LPVOID pParam)
                 do
                 {
                     cur_e = (left_e + right_e) / 2;
-                    auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, cur_e, l);
+                    auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, cur_e, l, z_a ? 1 : 0);
                     auto result = rk4_solve3ia < rv3 > (wavefunc_dfunc,
                                                         0,
-                                                        b_w * m_i,
+                                                        b_w * (z_a ? 1 : m_i),
                                                         b_w / n_points,
                                                         rv3 { 0, M_PI / 2 },
                                                         1e-8,
@@ -178,10 +180,10 @@ UINT SimulationThreadProc(LPVOID pParam)
 
     for (size_t i = 0; (i < level_count) && dlg.m_bWorking; ++i)
     {
-        auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, energy_levels[i], l);
+        auto wavefunc_dfunc = make_wavefunc_dfunc(barrier_fn, b_w, energy_levels[i], l, z_a ? 1 : 0);
         double s_step = b_w / (n_points / 10);
-        dresult3 < rv3 > result = { 0, { 0, M_PI / 2 } };
-        for (size_t j = 0; (result.t < b_w * m_i) && dlg.m_bWorking; ++j)
+        dresult3 < rv3 > result = { z_a ? 1e-3 : 0, { 0, M_PI / 2 } };
+        for (size_t j = 0; (result.t < b_w * (z_a ? 1 : m_i)) && dlg.m_bWorking; ++j)
         {
             result = rk4_solve3a < rv3 > (wavefunc_dfunc, result.t, s_step, result.x, 1e-8, 0.01);
             if (!wavefunc_re_plots[i].data->empty() &&
@@ -233,6 +235,7 @@ CEigensystemDlg::CEigensystemDlg(CWnd* pParent /*=NULL*/)
     , m_fpStartEnergy(-2)
     , m_fpEndEnergy(0)
     , m_lfModelingInterval(2)
+    , m_bAccurateNearZero(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -262,6 +265,7 @@ void CEigensystemDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_EV_PLOT, m_cEigenvaluePlot);
     DDX_Control(pDX, IDC_EF_PLOT, m_cEigenfunctionPlot);
     DDX_Text(pDX, IDC_EDIT6, m_lfModelingInterval);
+    DDX_Check(pDX, IDC_CHECK9, m_bAccurateNearZero);
 }
 
 BEGIN_MESSAGE_MAP(CEigensystemDlg, CDialogEx)

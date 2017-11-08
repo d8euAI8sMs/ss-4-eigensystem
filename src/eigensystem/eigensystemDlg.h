@@ -55,4 +55,5 @@ public:
     PlotStatic m_cEigenfunctionPlot;
     double m_lfModelingInterval;
     CButton m_cDrawAtFullInterval;
+    BOOL m_bAccurateNearZero;
 };
